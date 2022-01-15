@@ -24,7 +24,7 @@ export const AuthContextProvider = ({ children }) => {
             (FBuser) => {
                 if (FBuser) {
                     setUser({ isLoggedIn: true, emailVerified: FBuser.emailVerified, email: FBuser.email, uid: FBuser.uid, persistence: FBuser.auth.persistenceManager.persistence.type });
-                    setAlerts(() => [{ variant: "green", message: "Logged in: " + FBuser.email }]);
+                    setAlerts(() => [{ variant: "green", message: "Logged in: " + FBuser.email + " / " + FBuser.auth.persistenceManager.persistence.type }]);
                     if (!FBuser.emailVerified) setAlerts(alerts => [...alerts, { variant: "red", message: "Your e-mail is not verified." }]);
                 }
                 setIsLoading(false);

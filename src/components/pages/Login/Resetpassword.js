@@ -14,7 +14,8 @@ function Resetpassword() {
     const { value: codeValue, hasError: codeError, valueHandler: codeValueHandler, blurHandler: codeBlurHandler } = useInput("verificationcode");
     const navigate = useNavigate();
 
-    let codeContent = <div className="mb-2">Verification code: {oobCode}</div>;
+    // let codeContent = <div className="mb-2">Verification code: {oobCode}</div>;
+    let codeContent = "";
 
     if (!oobCode)
         codeContent = <div className="mb-2">
