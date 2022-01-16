@@ -1,20 +1,21 @@
 import React from "react";
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from "../../../store/auth-context";
 import useInput from "../../../hooks/use-input";
 import { auth } from "../../../api/firebase";
 import { setPersistence, browserLocalPersistence, browserSessionPersistence, signInWithEmailAndPassword } from "firebase/auth";
-// import { auth, db } from "../../../api/firebase";
-// import { ref, onValue, query, limitToLast } from "firebase/database";
 
 function Login() {
     const { loadingHandler, resetAlerts, addAlert } = useContext(AuthContext);
     const { value: emailValue, hasError: emailError, isValid: emailIsValid, valueHandler: emailValueHandler, blurHandler: emailBlurHandler } = useInput("email");
     const { value: passwordValue, hasError: passwordError, isValid: passwordIsValid, valueHandler: passwordValueHandler, blurHandler: passwordBlurHandler } = useInput("password");
     const [rememberValue, setRememberValue] = useState(false);
-
     const navigate = useNavigate();
+
+    const renderCount = useRef(0);
+    renderCount.current = renderCount.current + 1;
+    console.log("Login rendered: " + renderCount.current);
 
     const formIsValid = emailIsValid && passwordIsValid;
 
@@ -42,13 +43,14 @@ function Login() {
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
                         E-mail
                     </label>
-                    <input className={"shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " + (emailError ? 'bg-red-200' : '')} id="username" type="text" placeholder="E-mail" value={emailValue} onChange={emailValueHandler} onBlur={emailBlurHandler} />
+                    <input className={"shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " + (emailError ? 'bg-red-200' : '')} id="username" type="text" placeholder="E-mail" onChange={emailValueHandler} onBlur={emailBlurHandler} />
+
                 </div>
                 <div className="mb-2">
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
                         Password
                     </label>
-                    <input className={"shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " + (passwordError ? 'bg-red-200' : '')} id="password" type="password" placeholder="****************" onChange={passwordValueHandler} value={passwordValue} onBlur={passwordBlurHandler} />
+                    <input className={"shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " + (passwordError ? 'bg-red-200' : '')} id="password" type="password" placeholder="****************" onChange={passwordValueHandler} onBlur={passwordBlurHandler} />
                     {/* <p className="text-red-500 text-xs italic">Please choose a password.</p> */}
                 </div>
                 <div className="mb-4 form-check">

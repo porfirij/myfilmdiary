@@ -1,20 +1,24 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback, useRef } from 'react';
 import checkInput from '../misc/check-input';
+import debounce from 'lodash.debounce';
 
 function useInput(type) {
 
     const [value, setValue] = useState("");
     const [touched, setTouched] = useState(false);
 
-    const valueHandler = (event) => {
+    const renderCount = useRef(0);
+    renderCount.current = renderCount.current + 1;
+    console.log("Useinput rendered: " + renderCount.current);
+
+    const valueHandler = useCallback((event) => {
         setValue(event.target.value);
         setTouched(true);
-    }
+    }, []);
 
-    const resetHandler = () => {
-        setValue("");
-        setTouched(false);
-    }
+    const debouncedValueHandler = useMemo(() => {
+        return debounce(valueHandler, 800);
+    }, [valueHandler]);
 
     const blurHandler = () => {
         setTouched(true);
@@ -24,7 +28,7 @@ function useInput(type) {
     const hasError = touched && !isValid;
 
 
-    return { value, isValid, hasError, valueHandler, blurHandler, resetHandler };
+    return { value, isValid, hasError, valueHandler: debouncedValueHandler, blurHandler };
 
 }
 

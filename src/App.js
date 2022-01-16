@@ -12,7 +12,7 @@ import Signup from './components/pages/Signup/Signup';
 import NotFound from './components/pages/NotFound';
 import Centered from './components/ui/Centered';
 import Alert from "./components/ui/Alert";
-import Modal from "./components/ui/Modal";
+// import Modal from "./components/ui/Modal";
 import Protected from './components/ui/Protected';
 import Loading from './components/ui/Loading';
 
