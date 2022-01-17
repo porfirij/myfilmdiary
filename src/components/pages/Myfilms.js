@@ -31,14 +31,6 @@ function Myfilms() {
 
     useEffect(() => {
         fetchData();
-
-        // let isMounted = true;
-        // if (isMounted) {
-        //     fetchData();
-        // }
-        // return () => {
-        //     isMounted = false;
-        // };
     }, [fetchData]);
 
     const removeFilmHandler = async (id) => {

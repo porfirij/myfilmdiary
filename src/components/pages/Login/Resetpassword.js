@@ -11,6 +11,7 @@ const oobCode = query.get("oobCode");
 function Resetpassword() {
     const { resetAlerts, loadingHandler, addAlert } = useContext(AuthContext);
     const { value: passwordValue, hasError: passwordError, isValid: passwordIsValid, valueHandler: passwordValueHandler, blurHandler: passwordBlurHandler } = useInput("password");
+    const { value: confirmPasswordValue, hasError: confirmPasswordError, isValid: confirmPasswordIsValid, valueHandler: confirmPasswordValueHandler, blurHandler: confirmPasswordBlurHandler } = useInput("password");
     const { value: codeValue, hasError: codeError, valueHandler: codeValueHandler, blurHandler: codeBlurHandler } = useInput("verificationcode");
     const navigate = useNavigate();
 
@@ -25,7 +26,7 @@ function Resetpassword() {
             <input className={"shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " + (codeError ? 'bg-red-200' : '')} id="password" type="text" placeholder="****************" onChange={codeValueHandler} value={codeValue} onBlur={codeBlurHandler} />
         </div>;
 
-    const formIsValid = passwordIsValid;
+    const formIsValid = passwordIsValid && confirmPasswordIsValid && passwordValue === confirmPasswordValue;
 
     const resetPasswordHandler = async (event) => {
         event.preventDefault();
@@ -52,7 +53,14 @@ function Resetpassword() {
                     <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
                         New Password
                     </label>
-                    <input className={"shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " + (passwordError ? 'bg-red-200' : '')} id="password" type="password" placeholder="****************" onChange={passwordValueHandler} value={passwordValue} onBlur={passwordBlurHandler} />
+                    <input className={"shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " + (passwordError ? 'bg-red-200' : '')} id="password" type="password" placeholder="****************" onChange={passwordValueHandler} onBlur={passwordBlurHandler} />
+                </div>
+
+                <div className="mb-2">
+                    <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="password">
+                        Confirm Password
+                    </label>
+                    <input className={"shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline " + (confirmPasswordError ? 'bg-red-200' : '')} id="password" type="password" placeholder="****************" onChange={confirmPasswordValueHandler} onBlur={confirmPasswordBlurHandler} />
                 </div>
 
                 <div className="flex items-center justify-between mt-5">

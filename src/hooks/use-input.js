@@ -9,7 +9,6 @@ function useInput(type) {
 
     const renderCount = useRef(0);
     renderCount.current = renderCount.current + 1;
-    console.log("Useinput rendered: " + renderCount.current);
 
     const valueHandler = useCallback((event) => {
         setValue(event.target.value);
@@ -17,7 +16,7 @@ function useInput(type) {
     }, []);
 
     const debouncedValueHandler = useMemo(() => {
-        return debounce(valueHandler, 800);
+        return debounce(valueHandler, 600);
     }, [valueHandler]);
 
     const blurHandler = () => {

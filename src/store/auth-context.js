@@ -4,7 +4,8 @@ import { onAuthStateChanged } from "firebase/auth";
 
 const AuthContext = React.createContext({
     user: { isLoggedIn: false, emailVerified: false, email: "", uid: "", persistence: "" },
-    isLoading: true,
+    isLoading: false,
+    isInit: true,
     alerts: [],
     signOut: () => { },
     loadingHandler: () => { },
@@ -16,9 +17,15 @@ const AuthContext = React.createContext({
 export const AuthContextProvider = ({ children }) => {
     const [user, setUser] = useState({ isLoggedIn: false, emailVerified: false, email: "", uid: "", persistence: "" });
     const [alerts, setAlerts] = useState([]);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [isInit, setIsInit] = useState(true);
 
     useEffect(() => {
+        // if (auth.currentUser) {
+        //     setUser({ isLoggedIn: true, emailVerified: auth.currentUser.emailVerified, email: auth.currentUser.email, uid: auth.currentUser.uid, persistence: auth.currentUser.auth.persistenceManager.persistence.type });
+        //     setAlerts(() => [{ variant: "green", message: "Logged in: " + auth.currentUser.email + " / " + auth.currentUser.auth.persistenceManager.persistence.type }]);
+        //     if (!auth.currentUser.emailVerified) setAlerts(alerts => [...alerts, { variant: "red", message: "Your e-mail is not verified." }]);
+        // }
         const authStateUnsubscribe = onAuthStateChanged(
             auth,
             (FBuser) => {
@@ -26,10 +33,14 @@ export const AuthContextProvider = ({ children }) => {
                     setUser({ isLoggedIn: true, emailVerified: FBuser.emailVerified, email: FBuser.email, uid: FBuser.uid, persistence: FBuser.auth.persistenceManager.persistence.type });
                     setAlerts(() => [{ variant: "green", message: "Logged in: " + FBuser.email + " / " + FBuser.auth.persistenceManager.persistence.type }]);
                     if (!FBuser.emailVerified) setAlerts(alerts => [...alerts, { variant: "red", message: "Your e-mail is not verified." }]);
+                    setIsInit(false);
+                    // setIsLoading(false);
+                } else if (FBuser === null) {
+                    setIsInit(false);
+                    // setIsLoading(false);
                 }
-                setIsLoading(false);
             },
-            (error) => setAlerts(alerts => [...alerts, { variant: "red", message: error.message }]));
+            (error) => { setAlerts(alerts => [...alerts, { variant: "red", message: error.message }]); setIsInit(false); });
         return authStateUnsubscribe;
     }, []);
 
@@ -63,6 +74,7 @@ export const AuthContextProvider = ({ children }) => {
         <AuthContext.Provider value=
             {{
                 user,
+                isInit,
                 isLoading,
                 loadingHandler: useCallback((loading) => loadingHandler(loading), []),
                 userHandler,

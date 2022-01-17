@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Route, Routes } from "react-router-dom";
+import { auth } from "./api/firebase";
 import AuthContext from "./store/auth-context";
 import Layout from './components/ui/Layout';
 import Home from './components/pages/Home';
@@ -15,9 +16,10 @@ import Alert from "./components/ui/Alert";
 // import Modal from "./components/ui/Modal";
 import Protected from './components/ui/Protected';
 import Loading from './components/ui/Loading';
+import Sendemailverification from './components/pages/Signup/Sendemailverification';
 
 function App() {
-  const { isLoading, alerts, removeAlert } = useContext(AuthContext);
+  const { isLoading, isInit, alerts, removeAlert } = useContext(AuthContext);
 
   const closeAlertHandler = (alertMessage) => {
     removeAlert(alertMessage);
@@ -33,11 +35,12 @@ function App() {
   //   alertsContent = alerts.map((element, index) => <Modal key={index} onClose={closeAlertHandler.bind(null, element.message)} variant={element.variant}>{element.message}</Modal>);
   // }
 
+  if (isInit) return <Centered><Loading /></Centered>;
 
   return (
     <>
-      {isLoading && <Centered><Loading /></Centered>}
       {alertsContent}
+      {isLoading && <Centered><Loading /></Centered>}
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home />} />
@@ -47,11 +50,12 @@ function App() {
           <Route path="sendpasswordreset" element={<Sendpasswordreset />} />
           <Route path="resetpassword" element={<Resetpassword />} />
           <Route path="signup" element={<Signup />} />
+          <Route path="sendemailverification" element={<Protected><Sendemailverification /></Protected>} />
           <Route path="*" element={<NotFound />} />
         </Route>
       </Routes>
     </>
-  );
+  )
 }
 
 export default App;

@@ -13,9 +13,9 @@ function Login() {
     const [rememberValue, setRememberValue] = useState(false);
     const navigate = useNavigate();
 
-    const renderCount = useRef(0);
-    renderCount.current = renderCount.current + 1;
-    console.log("Login rendered: " + renderCount.current);
+    // const renderCount = useRef(0);
+    // renderCount.current = renderCount.current + 1;
+    // console.log("Login rendered: " + renderCount.current);
 
     const formIsValid = emailIsValid && passwordIsValid;
 
