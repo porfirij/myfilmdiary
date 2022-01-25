@@ -7,22 +7,22 @@ import { auth } from "../../../api/firebase";
 import { sendPasswordResetEmail } from "firebase/auth";
 
 function Sendpasswordreset() {
-    const { resetAlerts, loadingHandler, addAlert } = useContext(AuthContext);
+    const { loadingHandler, modalHandler } = useContext(AuthContext);
     const { value: emailValue, hasError: emailError, isValid: emailIsValid, valueHandler: emailValueHandler, blurHandler: emailBlurHandler } = useInput("email");
 
     const formIsValid = emailIsValid;
 
     const resetEmailHandler = async (event) => {
         event.preventDefault();
-        resetAlerts();
+        modalHandler(null);
         if (formIsValid) {
             loadingHandler(true);
             try {
                 await sendPasswordResetEmail(auth, emailValue, { url: "http://localhost:3000/resetpassword" });
-                addAlert({ variant: "green", message: "Password Reset Email Has Been Sent" });
+                modalHandler({ variant: "green", title: "Succcess", message: "Password Reset Email Has Been Sent" });
                 //navigate("/addnewfilm");
             } catch (error) {
-                addAlert({ variant: "red", message: error.message });
+                modalHandler({ variant: "red", title: "Error", message: error.message });
             }
             loadingHandler(false);
         }

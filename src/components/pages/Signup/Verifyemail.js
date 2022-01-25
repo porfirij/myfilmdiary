@@ -9,7 +9,7 @@ const query = new URLSearchParams(window.location.search);
 const oobCode = query.get("oobCode");
 
 function Verifyemail() {
-    const { resetAlerts, loadingHandler, addAlert } = useContext(AuthContext);
+    const { loadingHandler, modalHandler } = useContext(AuthContext);
     const { value: codeValue, hasError: codeError, valueHandler: codeValueHandler, blurHandler: codeBlurHandler } = useInput("verificationcode");
     const navigate = useNavigate();
 
@@ -26,16 +26,16 @@ function Verifyemail() {
 
     const verifyEmailHandler = async (event) => {
         event.preventDefault();
-        resetAlerts();
+        modalHandler({ isOn: false });
         if (formIsValid) {
             loadingHandler(true);
             const code = oobCode || codeValue;
             try {
                 await applyActionCode(auth, code);
-                addAlert({ variant: "green", message: "Email verified." });
+                modalHandler({ isOn: true, variant: "green", message: "Email verified." });
                 navigate("/login");
             } catch (error) {
-                addAlert({ variant: "red", message: error.message });
+                modalHandler({ isOn: true, variant: "red", message: error.message });
             }
             loadingHandler(false);
         }

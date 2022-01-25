@@ -7,22 +7,22 @@ import { auth } from "../../../api/firebase";
 import { sendEmailVerification } from "firebase/auth";
 
 function Sendemailverification() {
-    const { resetAlerts, loadingHandler, addAlert } = useContext(AuthContext);
+    const { loadingHandler, modalHandler } = useContext(AuthContext);
     const { value: emailValue, hasError: emailError, isValid: emailIsValid, valueHandler: emailValueHandler, blurHandler: emailBlurHandler } = useInput("email");
 
     const formIsValid = emailIsValid;
 
     const sendEmailVerificationHandler = async (event) => {
         event.preventDefault();
-        resetAlerts();
+        modalHandler({ isOn: false });
         if (formIsValid) {
             loadingHandler(true);
             try {
                 await sendEmailVerification(auth.currentUser);
-                addAlert({ variant: "green", message: "Email Verification Request Has Been Sent" });
+                modalHandler({ isOn: true, variant: "green", message: "Email Verification Request Has Been Sent" });
                 //navigate("/addnewfilm");
             } catch (error) {
-                addAlert({ variant: "red", message: error.message });
+                modalHandler({ isOn: true, variant: "red", message: error.message });
             }
             loadingHandler(false);
         }

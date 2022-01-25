@@ -1,12 +1,13 @@
 import React, { useState, useContext } from 'react';
-import { db } from '../../api/firebase';
+import { createPortal } from 'react-dom';
+import { auth, db } from '../../api/firebase';
 import { ref, get, set } from "firebase/database";
 import AuthContext from '../../store/auth-context';
 import Filmcard from '../ui/Filmcard';
 
-function AddNewFilm() {
-
-    const { user, loadingHandler, addAlert } = useContext(AuthContext);
+function AddFilm() {
+    const { loadingHandler, modalHandler } = useContext(AuthContext);
+    const [addNewFilm, setAddNewFilm] = useState(false);
 
     const [searchedFilms, setSearchedFilms] = useState([
         {
@@ -42,30 +43,32 @@ function AddNewFilm() {
         }
     ]);
 
+    const addNewFilmHandler = () => {
+        setOffCanvas(true);
+    }
+
     const addNewFilmHandler = async (id) => {
         const selectedFilm = searchedFilms.filter((film) => film.ImdbID === id);
-        loadingHandler(true);
+        loadingHandler({ isOn: false });
         try {
-            const snapshot = await get(ref(db, `users/${user.uid}/${id}`));
+            const snapshot = await get(ref(db, `users/${auth.currentUser.uid}/${id}`));
             if (snapshot.exists()) {
-                addAlert({ variant: "red", message: "Film already added." });
+                modalHandler({ isOn: true, variant: "red", title: "Already added", message: "Film already added." });
             } else {
-                await set(ref(db, `users/${user.uid}/${id}`), selectedFilm[0]);
-                addAlert({ variant: "green", message: "Film successfully added." });
+                await set(ref(db, `users/${auth.currentUser.uid}/${id}`), selectedFilm[0]);
+                modalHandler({ isOn: true, variant: "green", title: "Success", message: "Film added to your watch list." });
             }
         } catch (error) {
-            addAlert({ variant: "red", message: error.message });
+            modalHandler({ isOn: true, variant: "red", title: "Error", message: error.message });
         }
         loadingHandler(false);
     }
 
-    const filmContent = searchedFilms.map((film) => <Filmcard key={film.ImdbID} film={film} onAddNewFilm={addNewFilmHandler}></Filmcard>);
+    const filmListContent = searchedFilms.map((film) => <Filmcard key={film.ImdbID} film={film} onAddNewFilm={addNewFilmHandler}></Filmcard>);
 
-    return (
-        <div className="flex flex-row overflow-x-auto">
-            {filmContent}
-        </div>
-    )
+    if (addNewFilm) {
+        return <div className="flex flex-column overflow-y-auto">{filmListContent}</div>;
+    }
 }
 
-export default AddNewFilm;
+export default AddFilm;

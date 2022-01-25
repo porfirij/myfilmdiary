@@ -1,17 +1,17 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { db } from '../../api/firebase';
+import { auth, db } from '../../api/firebase';
 import { ref, query, limitToLast, remove, get } from "firebase/database";
 import AuthContext from '../../store/auth-context';
 import Filmcard from '../ui/Filmcard';
 
 function Myfilms() {
-    const { user, isLoading, loadingHandler, addAlert } = useContext(AuthContext);
+    const { isLoading, loadingHandler, modalHandler } = useContext(AuthContext);
     const [films, setFilms] = useState([]);
     let filmContent = <><h2>No films yet.</h2><Link to="/addnewfilm">Why not add one?</Link></>;
 
     const fetchData = useCallback(async () => {
-        const lastRef = query(ref(db, `users/${user.uid}`), limitToLast(4));
+        const lastRef = query(ref(db, `users/${auth.currentUser.uid}`), limitToLast(4));
         let fetchedFilms = [];
         loadingHandler(true);
         try {
@@ -22,12 +22,12 @@ function Myfilms() {
                 fetchedFilms.push({ id: key, ...data });
             });
         } catch (error) {
-            addAlert({ variant: "red", message: error.message });
+            modalHandler({ isOn: true, variant: "red", title: "Error", message: error.message });
             filmContent = <h2>{error.message}</h2>;
         }
         loadingHandler(false);
         setFilms(fetchedFilms);
-    }, [loadingHandler, addAlert]);
+    }, [loadingHandler, modalHandler]);
 
     useEffect(() => {
         fetchData();
@@ -35,23 +35,23 @@ function Myfilms() {
 
     const removeFilmHandler = async (id) => {
         try {
-            const snapshot = await get(ref(db, `users/${user.uid}/${id}`));
+            const snapshot = await get(ref(db, `users/${auth.currentUser.uid}/${id}`));
             if (snapshot.exists()) {
-                await remove(ref(db, `users/${user.uid}/${id}`));
-                addAlert({ variant: "green", message: "Film successfully removed." });
+                await remove(ref(db, `users/${auth.currentUser.uid}/${id}`));
+                modalHandler({ isOn: true, variant: "green", title: "Success", message: "Film successfully removed." });
                 fetchData();
             } else {
-                addAlert({ variant: "red", message: "Film is not added." });
+                modalHandler({ isOn: true, variant: "red", title: "Error", message: "Film is not added." });
             }
         } catch (error) {
-            addAlert({ variant: "red", message: error.message });
+            modalHandler({ isOn: true, variant: "red", title: "Error", message: error.message });
         }
     }
 
     if (films.length) filmContent = films.map((film) => <Filmcard key={film.ImdbID} film={film} onDeleteFilm={removeFilmHandler}></Filmcard>);
 
     return (
-        <div className="flex flex-row overflow-x-auto">
+        <div className="flex flex-col">
             {!isLoading && filmContent}
         </div>
     )

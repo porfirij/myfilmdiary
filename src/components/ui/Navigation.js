@@ -5,15 +5,14 @@ import { auth } from "./../../api/firebase";
 import { signOut } from "firebase/auth";
 
 function Navigation() {
-    const ctx = useContext(AuthContext);
+    const { modalHandler } = useContext(AuthContext);
 
     const logOut = async () => {
         try {
             await signOut(auth);
-            ctx.signOut();
+            modalHandler({ title: "Signed Out", message: "Signed Out successfully." });
         } catch (error) {
-            ctx.addAlert({ variant: "red", message: error.message });
-            console.error(error.message);
+            modalHandler({ variant: "red", title: "Error", message: error.message });
         }
     }
 
@@ -29,15 +28,15 @@ function Navigation() {
                 <li className="nav-item p-2">
                     <Link to="/addnewfilm" className="nav-link hover:text-gray-300">Add New Film</Link>
                 </li>
-                {!ctx.user.isLoggedIn &&
+                {!auth.currentUser &&
                     <li className="nav-item p-2">
                         <Link to="/login" className="nav-link hover:text-gray-300">Log In</Link>
                     </li>}
-                {!ctx.user.isLoggedIn &&
+                {!auth.currentUser &&
                     <li className="nav-item p-2">
                         <Link to="/signup" className="nav-link hover:text-gray-300">Sign Up</Link>
                     </li>}
-                {ctx.user.isLoggedIn && <li className="nav-item p-2">
+                {auth.currentUser && <li className="nav-item p-2">
                     <button className="nav-link hover:text-gray-300" onClick={logOut}>Log Out</button>
                 </li>}
             </ul>

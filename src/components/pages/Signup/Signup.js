@@ -7,7 +7,7 @@ import { auth } from "../../../api/firebase";
 import { setPersistence, browserLocalPersistence, browserSessionPersistence, createUserWithEmailAndPassword } from "firebase/auth";
 
 function Signup() {
-    const { resetAlerts, loadingHandler, addAlert } = useContext(AuthContext);
+    const { loadingHandler, modalHandler } = useContext(AuthContext);
     const { value: emailValue, hasError: emailError, isValid: emailIsValid, valueHandler: emailValueHandler, blurHandler: emailBlurHandler } = useInput("email");
     const { value: passwordValue, hasError: passwordError, isValid: passwordIsValid, valueHandler: passwordValueHandler, blurHandler: passwordBlurHandler } = useInput("password");
     const [rememberValue, setRememberValue] = useState(false);
@@ -18,7 +18,7 @@ function Signup() {
 
     const signUpHandler = async (event) => {
         event.preventDefault();
-        resetAlerts();
+        modalHandler({ isOn: false });
         if (formIsValid) {
             loadingHandler(true);
             try {
@@ -26,7 +26,7 @@ function Signup() {
                 await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
                 navigate("/addnewfilm");
             } catch (error) {
-                addAlert({ variant: "red", message: error.message });
+                modalHandler({ isOn: true, variant: "red", message: error.message });
             }
             loadingHandler(false);
         }

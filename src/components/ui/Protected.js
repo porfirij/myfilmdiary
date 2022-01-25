@@ -1,13 +1,12 @@
-import React, { useContext } from "react";
-import AuthContext from "../../store/auth-context";
+import React from "react";
 import { useLocation, Navigate } from "react-router-dom";
 import { auth } from "./../../api/firebase";
 
 const Protected = (props) => {
-    const { user } = useContext(AuthContext);
+
     let location = useLocation();
 
-    if (!user.isLoggedIn) {
+    if (!auth.currentUser) {
         return <Navigate to="/login" state={{ from: location }} />;
     }
 

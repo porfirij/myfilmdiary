@@ -9,7 +9,7 @@ const query = new URLSearchParams(window.location.search);
 const oobCode = query.get("oobCode");
 
 function Resetpassword() {
-    const { resetAlerts, loadingHandler, addAlert } = useContext(AuthContext);
+    const { loadingHandler, modalHandler } = useContext(AuthContext);
     const { value: passwordValue, hasError: passwordError, isValid: passwordIsValid, valueHandler: passwordValueHandler, blurHandler: passwordBlurHandler } = useInput("password");
     const { value: confirmPasswordValue, hasError: confirmPasswordError, isValid: confirmPasswordIsValid, valueHandler: confirmPasswordValueHandler, blurHandler: confirmPasswordBlurHandler } = useInput("password");
     const { value: codeValue, hasError: codeError, valueHandler: codeValueHandler, blurHandler: codeBlurHandler } = useInput("verificationcode");
@@ -30,16 +30,16 @@ function Resetpassword() {
 
     const resetPasswordHandler = async (event) => {
         event.preventDefault();
-        resetAlerts();
+        modalHandler(null);
         if (formIsValid) {
             loadingHandler(true);
             const code = oobCode || codeValue;
             try {
                 await confirmPasswordReset(auth, code, passwordValue);
-                addAlert({ variant: "green", message: "Password changed." });
+                modalHandler({ variant: "green", title: "Success", message: "Password changed." });
                 navigate("/login");
             } catch (error) {
-                addAlert({ variant: "red", message: error.message });
+                modalHandler({ variant: "red", title: "Error", message: error.message });
             }
             loadingHandler(false);
         }

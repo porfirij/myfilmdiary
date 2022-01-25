@@ -7,7 +7,7 @@ import { auth } from "../../../api/firebase";
 import { setPersistence, browserLocalPersistence, browserSessionPersistence, signInWithEmailAndPassword } from "firebase/auth";
 
 function Login() {
-    const { loadingHandler, resetAlerts, addAlert } = useContext(AuthContext);
+    const { loadingHandler, modalHandler } = useContext(AuthContext);
     const { value: emailValue, hasError: emailError, isValid: emailIsValid, valueHandler: emailValueHandler, blurHandler: emailBlurHandler } = useInput("email");
     const { value: passwordValue, hasError: passwordError, isValid: passwordIsValid, valueHandler: passwordValueHandler, blurHandler: passwordBlurHandler } = useInput("password");
     const [rememberValue, setRememberValue] = useState(false);
@@ -21,7 +21,6 @@ function Login() {
 
     const loginHandler = async (event) => {
         event.preventDefault();
-        resetAlerts();
         if (formIsValid) {
             loadingHandler(true);
             try {
@@ -29,7 +28,7 @@ function Login() {
                 await signInWithEmailAndPassword(auth, emailValue, passwordValue);
                 navigate("/myfilms");
             } catch (error) {
-                addAlert({ variant: "red", message: error.message });
+                modalHandler({ isOn: true, variant: "red", title: "Error", message: error.message });
                 console.error(error.message);
             }
             loadingHandler(false);
