@@ -8,7 +8,7 @@ import { sendEmailVerification } from "firebase/auth";
 
 function Sendemailverification() {
     const { loadingHandler, modalHandler } = useContext(AuthContext);
-    const { value: emailValue, hasError: emailError, isValid: emailIsValid, valueHandler: emailValueHandler, blurHandler: emailBlurHandler } = useInput("email");
+    const { hasError: emailError, isValid: emailIsValid, valueHandler: emailValueHandler, blurHandler: emailBlurHandler } = useInput("email");
 
     const formIsValid = emailIsValid;
 

@@ -3,7 +3,7 @@ import { Route, Routes } from "react-router-dom";
 import AuthContext from "./store/auth-context";
 import Layout from './components/ui/Layout';
 import Home from './components/pages/Home';
-import Myfilms from './components/pages/Myfilms';
+import MyMovies from './components/pages/MyMovies';
 import Login from './components/pages/Login/Login';
 import Sendpasswordreset from './components/pages/Login/Sendpasswordreset';
 import Resetpassword from './components/pages/Login/Resetpassword';
@@ -13,7 +13,7 @@ import Modal from "./components/ui/Modal";
 import Protected from './components/ui/Protected';
 import Loading from './components/ui/Loading';
 import Sendemailverification from './components/pages/Signup/Sendemailverification';
-import SearchFilms from './components/pages/Addfilm/SearchFilms';
+import SearchMovie from './components/pages/Addmovie/SearchMovie';
 
 function App() {
   const { isLoading, isInit } = useContext(AuthContext);
@@ -32,8 +32,8 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route path="/" element={<Home />} />
-          <Route path="myfilms" element={<Protected><Myfilms /></Protected>} />
-          <Route path="addnewfilm" element={<Protected><SearchFilms /></Protected>} />
+          <Route path="mymovies" element={<Protected><MyMovies /></Protected>} />
+          <Route path="search" element={<Protected><SearchMovie /></Protected>} />
           <Route path="login" element={<Login />} />
           <Route path="sendpasswordreset" element={<Sendpasswordreset />} />
           <Route path="resetpassword" element={<Resetpassword />} />

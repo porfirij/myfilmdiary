@@ -16,7 +16,7 @@ function useInput(type) {
     }, []);
 
     const debouncedValueHandler = useMemo(() => {
-        return debounce(valueHandler, 600);
+        return debounce(valueHandler, 400);
     }, [valueHandler]);
 
     const blurHandler = () => {

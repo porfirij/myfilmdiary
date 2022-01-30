@@ -7,6 +7,10 @@ const checkInput = (type, value) => {
             return value.length > 5;
         case "verificationCode":
             return value.length > 10;
+        case "date":
+            const watchedDate = new Date(value);
+            const currentDate = Date.now();
+            if (isNaN(watchedDate) || currentDate < watchedDate) { return false; } else { return true; }
         default:
             return value.length > 5;
     }

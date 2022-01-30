@@ -1,63 +1,74 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { auth, db } from '../../api/firebase';
-import { ref, query, limitToLast, remove, get } from "firebase/database";
+import { ref, query, limitToLast, get } from "firebase/database";
 import AuthContext from '../../store/auth-context';
-import Filmcard from '../ui/Filmcard';
+import MovieCard from '../ui/MovieCard';
 
-function Myfilms() {
+function MyMovies() {
     const { isLoading, loadingHandler, modalHandler } = useContext(AuthContext);
-    const [films, setFilms] = useState([]);
-    let filmContent = <><h2>No films yet.</h2><Link to="/addnewfilm">Why not add one?</Link></>;
+    const [movies, setMovies] = useState([]);
+    const [refresh, setRefresh] = useState(false);
+    let movieContent = <><h2>No movies yet.</h2><Link to="/search">Why not add one?</Link></>;
 
     const fetchData = useCallback(async () => {
-        const lastRef = query(ref(db, `users/${auth.currentUser.uid}`), limitToLast(4));
-        let fetchedFilms = [];
+        const lastRef = query(ref(db, `users/${auth.currentUser.uid}`), limitToLast(50));
+        let fetchedMovies = [];
         loadingHandler(true);
         try {
             const snapshot = await get(lastRef);
             snapshot.forEach(childSnapshot => {
                 const key = childSnapshot.key;
                 const data = childSnapshot.val();
-                fetchedFilms.push({ id: key, ...data });
+                fetchedMovies.push({ id: key, ...data });
             });
         } catch (error) {
             modalHandler({ isOn: true, variant: "red", title: "Error", message: error.message });
-            filmContent = <h2>{error.message}</h2>;
+            movieContent = <h2>{error.message}</h2>;
         }
         loadingHandler(false);
-        setFilms(fetchedFilms);
+        setMovies(fetchedMovies);
     }, [loadingHandler, modalHandler]);
 
     useEffect(() => {
         fetchData();
     }, [fetchData]);
 
-    const removeFilmHandler = async (id) => {
-        try {
-            const snapshot = await get(ref(db, `users/${auth.currentUser.uid}/${id}`));
-            if (snapshot.exists()) {
-                await remove(ref(db, `users/${auth.currentUser.uid}/${id}`));
-                modalHandler({ isOn: true, variant: "green", title: "Success", message: "Film successfully removed." });
-                fetchData();
-            } else {
-                modalHandler({ isOn: true, variant: "red", title: "Error", message: "Film is not added." });
-            }
-        } catch (error) {
-            modalHandler({ isOn: true, variant: "red", title: "Error", message: error.message });
-        }
+    useEffect(() => {
+        if (refresh) fetchData();
+        setRefresh(false);
+    }, [refresh]);
+
+    const refreshOn = () => {
+        setRefresh(true);
     }
 
-    if (films.length) filmContent = films.map((film) => <Filmcard key={film.ImdbID} film={film} onDeleteFilm={removeFilmHandler}></Filmcard>);
+    if (movies.length) movieContent = movies.map((movie) => <MovieCard key={movie.imdbID} movie={movie} action="delete" refreshOn={refreshOn}></MovieCard>);
 
     return (
-        <div className="flex flex-col">
-            {!isLoading && filmContent}
+        <div className="flex flex-row flex-wrap w-full justify-center">
+            {!isLoading && movieContent}
         </div>
     )
 }
 
-export default Myfilms;
+export default MyMovies;
+
+    // const removeFilmHandler = async (id) => {
+    //     try {
+    //         const snapshot = await get(ref(db, `users/${auth.currentUser.uid}/${id}`));
+    //         if (snapshot.exists()) {
+    //             await remove(ref(db, `users/${auth.currentUser.uid}/${id}`));
+    //             modalHandler({ isOn: true, variant: "green", title: "Success", message: "Film successfully removed." });
+    //             fetchData();
+    //         } else {
+    //             modalHandler({ isOn: true, variant: "red", title: "Error", message: "Film is not added." });
+    //         }
+    //     } catch (error) {
+    //         modalHandler({ isOn: true, variant: "red", title: "Error", message: error.message });
+    //     }
+    // }
+
 
     // useEffect(() => {
     //     const onAuthUnsubscribe = onAuthStateChanged(auth, (user) => {

@@ -17,16 +17,16 @@ function Navigation() {
     }
 
     return (
-        <div className="w-3/5 px-4">
+        <div className="w-full sm:w-96 px-4">
             <ul className="flex flex-row justify-between pl-0 list-style-none mr-auto text-white uppercase text-center">
                 <li className="nav-item p-2">
-                    <Link to="/" className="nav-link hover:text-gray-300">My Film Diary</Link>
+                    <Link to="/" className="nav-link hover:text-gray-300">Popular</Link>
                 </li>
                 <li className="nav-item p-2">
-                    <Link to="/myfilms" className="nav-link hover:text-gray-300">My Films</Link>
+                    <Link to="/mymovies" className="nav-link hover:text-gray-300">My Movies</Link>
                 </li>
                 <li className="nav-item p-2">
-                    <Link to="/addnewfilm" className="nav-link hover:text-gray-300">Add New Film</Link>
+                    <Link to="/search" className="nav-link hover:text-gray-300">Search</Link>
                 </li>
                 {!auth.currentUser &&
                     <li className="nav-item p-2">

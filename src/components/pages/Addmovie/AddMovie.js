@@ -1,9 +1,8 @@
 import React, { useState, useContext } from 'react';
-import { createPortal } from 'react-dom';
 import { auth, db } from '../../api/firebase';
 import { ref, get, set } from "firebase/database";
 import AuthContext from '../../store/auth-context';
-import Filmcard from '../ui/Filmcard';
+import MovieCard from '../ui/MovieCard';
 
 function AddFilm() {
     const { loadingHandler, modalHandler } = useContext(AuthContext);
@@ -67,7 +66,7 @@ function AddFilm() {
     const filmListContent = searchedFilms.map((film) => <Filmcard key={film.ImdbID} film={film} onAddNewFilm={addNewFilmHandler}></Filmcard>);
 
     if (addNewFilm) {
-        return <div className="flex flex-column overflow-y-auto">{filmListContent}</div>;
+        return <div className="flex flex-row overflow-y-auto">{filmListContent}</div>;
     }
 }
 

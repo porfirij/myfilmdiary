@@ -21,7 +21,6 @@ export const AuthContextProvider = ({ children }) => {
             auth,
             (FBuser) => {
                 if (FBuser) {
-                    // modalHandler({ isOn: true, variant: "green", message: "Logged in: " + FBuser.email + " / " + FBuser.auth.persistenceManager.persistence.type });
                     if (!FBuser.emailVerified) modalHandler({ isOn: true, variant: "red", title: "Email verification required", message: "Your e-mail is not verified." });
                 }
                 setIsInit(false);
@@ -32,11 +31,6 @@ export const AuthContextProvider = ({ children }) => {
             });
         return authStateUnsubscribe;
     }, []);
-
-    // const signOut = () => {
-    //     setUser({ isLoggedIn: false, emailVerified: false, email: "", persistence: "" });
-    //     setAlerts([]);
-    // }
 
     const modalHandler = (modal) => {
         setModal(() => modal);

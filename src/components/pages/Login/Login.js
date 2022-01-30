@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useContext, useRef } from "react";
+import { useState, useContext } from "react";
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from "../../../store/auth-context";
 import useInput from "../../../hooks/use-input";
@@ -26,7 +26,7 @@ function Login() {
             try {
                 await setPersistence(auth, (rememberValue) ? browserLocalPersistence : browserSessionPersistence);
                 await signInWithEmailAndPassword(auth, emailValue, passwordValue);
-                navigate("/myfilms");
+                navigate("/mymovies");
             } catch (error) {
                 modalHandler({ isOn: true, variant: "red", title: "Error", message: error.message });
                 console.error(error.message);

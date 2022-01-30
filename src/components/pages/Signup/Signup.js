@@ -24,7 +24,7 @@ function Signup() {
             try {
                 await setPersistence(auth, (rememberValue) ? browserLocalPersistence : browserSessionPersistence);
                 await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
-                navigate("/addnewfilm");
+                navigate("/mymovies");
             } catch (error) {
                 modalHandler({ isOn: true, variant: "red", message: error.message });
             }
